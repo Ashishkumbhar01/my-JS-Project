@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>My Music Player</title>
+<style type="text/css">
+*{
+padding:0;
+margin:0;
+box-sizing:border-box;
+}
+body {
+overflow:hidden;
+background:black;
+color:white;
+}
+#controler {
+width:100%;
+height:;
+padding:15px;
+margin:30% auto;
+background:rgb(255,0,190);
+}
+#btnPause {
+width:80px;
+height:80px;
+background:blue;
+font-weight:bold;
+color:white;
+font-size:20px;
+border-radius:50%;
+}
+#btnNext {
+width:80px;
+height:40px;
+background:blue;
+font-weight:bold;
+color:white;
+font-size:20px;
+}
+#btnPre {
+width:80px;
+height:40px;
+background:blue;
+font-weight:bold;
+color:white;
+font-size:20px;
+}
+h2 {
+text-decoration:underline;
+font-size:40px;
+font-variant:small-caps;
+font-style:oblique;
+text-shadow:3px 1px 0px yellow;
+margin-top:2rem;
+text-align:center;
+color:fuchsia;
+font-weight:999;
+font-family:fantasy;
+}
+canvas {
+width:100%;
+height:auto;
+top:20%;
+background:#112;
+position:absolute;
+border:1px solid white;
+}
+ .container  {
+ width:100%;
+ height:100%;
+justify-content:center;
+align-items:center;
+margin:auto;
+}
+.btns {
+width:100%;
+position:absolute;
+top:60%;
+left:auto;
+margin:auto;
+display:inline-block;
+text-align:center;
+letter-spacing:25px;
+}
+.btns input {
+border:none;
+border-radius:7px;
+transition:1s;
+//**animation:blink 1s linear infinite**/
+}
+.anime{
+animation:blink 1s linear infinite;
+}
+
+.animes:active {
+animation:blinks 1s linear infinite;
+}
+
+@keyframes blink {
+transition:all 0.1s;
+0%{box-shadow:red 3px 3px 1px;}
+25%{box-shadow:yellow 3px 3px 1px;}
+50%{box-shadow:lime 3px 3px 1px;}
+75%{box-shadow:aqua 3px 3px 1px;}
+100%{box-shadow:fuchsia 3px 3px 1px;}
+}
+
+@keyframes blinks {
+transition:all 0.1s;
+0%{box-shadow:red 3px 3px 1px;}
+25%{box-shadow:yellow 3px 3px 1px;}
+50%{box-shadow:lime 3px 3px 1px;}
+75%{box-shadow:aqua 3px 3px 1px;}
+100%{box-shadow:fuchsia 3px 3px 1px;}
+}
+</style>
+</head>
+<body>
+<h2 class="t" align="center">My Music Player</h2>
+<div class="container">
+<div id="songs"></div>
+<canvas id="canvas"></canvas>
+<div class="btns">
+<input class="animes"  type="button"  id="btnPre" onclick="Pre()" value="Prev"/>
+<input class="animes"  type="button"  id="btnPause" onclick="PausePlay()" value="Play"/>
+<input class="animes" type="button"  id="btnNext" onclick="Next()" value="Next"/>
+</div>
+</div>
+
+<!--div id="controler">
+<h2>Audio Music Player</h2><br><br>
+<canvas id="canvas"></canvas>
+<input type="button"  id="btnPre" onclick="Pre()" value="Prev"/>
+<input type="button"  id="btnPause" onclick="PausePlay()" value="Play"/>
+<input type="button"  id="btnNext" onclick="Next()" value="Next"/>
+</div-->
+
+<script src="inspect.js" type="text/javascript"></script>
+<script type="text/javascript">
+var btn = document.querySelector("#btnPause");
+var canvas = document.getElementById("canvas");
+
+var source,
+ctx,
+context,
+analyser,
+fbc_Arrey,
+bars,
+bar_x,
+bar_width,
+bar_height;
+
+var songs = [
+"download/Awaara Shaam.mp3",
+"download/Choodiyan.mp3",
+"download/tu.mp3",
+"download/Yeh Fitoor Mera.mp3",
+"download/Itni Si Baat.mp3",
+"download/Teri Aankhon Mein.mp3",
+"download/dil ibadat.mp3",
+"download/mera pyar tera pyar.mp3",
+"download/Dil Mera Chahe.mp3",
+"download/Jitni Dafa.mp3",
+"download/Taaron Ke Shehar.mp3",
+"download/Saaiyaan.mp3",
+"download/Lut Gaye.mp3",
+"download/adhi adhi raat.mp3",
+"download/vahem.mp3",
+"download/tu mera nahi.mp3",
+"download/Ab na phir se.mp3",
+"download/Tujhe Hasil Karunga.mp3",
+"download/Tum Saath Ho.mp3",
+"download/Besharam Bewaffa.mp3",
+"download/Bewafa Tera Masoom Chehra.mp3",
+"download/Main Jis Din Bhulaa Dun.mp3",
+"download/Ya Ali.mp3",
+"download/Mujhe Peene Do.mp3",
+"download/Asal Mein.mp3",
+"download/Barsaat.mp3"
+];
+
+var song = new Audio();
+ //song.controls = true;
+ song.loop = true;
+// song.src = "download/tu.mp3";
+
+var currentSong = 0;
+window.onload = playSong;
+document.body.appendChild(song);
+
+function playSong() {
+song.src = songs[currentSong];
+song.play();
+}
+
+
+function PausePlay() {
+if (song.paused) {
+song.play();
+btn.value = 'Pause';
+btn.classList.add("anime");
+} else if (song.ended) {
+song.currentTime = 0;
+song.play();
+btn.value = "Pause";
+btn.classList.add("anime");
+} else {
+song.pause();
+btn.value = 'Play';
+btn.classList.remove("anime");
+}
+
+}
+
+function Next() {
+currentSong++;
+if (currentSong > 25) {
+currentSong = 0;
+}
+btn.classList.add("anime");
+playSong();
+btn.value = "Pause";
+}
+
+function Pre() {
+currentSong--;
+if (currentSong < 0) {
+currentSong = 25;
+}
+btn.classList.add("anime");
+btn.value = "Pause";
+playSong();
+}
+
+window.addEventListener("load", initMp3Player, false);
+function initMp3Player() {
+document.getElementById("songs").appendChild(song);
+context = new AudioContext();
+analyser = context.createAnalyser();
+canvas = document.getElementById("canvas");
+ctx = canvas.getContext('2d');
+
+var distortion = context.createWaveShaper();
+//analyser.connect(context.destination);
+
+source = context.createMediaElementSource(song);
+source.connect(distortion);
+source.connect(analyser);
+analyser.connect(context.destination);
+frameLooper();
+}
+
+function frameLooper() {
+window.RequestAnimationFrame =
+    window.requestAnimationFrame(frameLooper) ||
+    window.mozRequestAnimationFrame(frameLooper) ||
+    window.webkitRequestAnimationFrame(frameLooper) ||
+    window.msRequestAnimationFrame(frameLooper);
+
+fbc_Arrey = new Uint8Array(analyser.frequencyBinCount);
+  analyser.getByteFrequencyData(fbc_Arrey);
+  ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+  //ctx.fillStyle =  `hsl(${canvas.width / bar_height * 400}, 100%, 50%)`; // Color of the bars
+  bars = 100;
+  for (var i = 0; i < bars; i++) {
+    bar_x = i * 3;
+    bar_width = 2;
+    bar_height = -(fbc_Arrey[i] / 2);
+    //(x, y, width, height) // Explanation of the parameters below
+    ctx.fillStyle =  `hsl(${bar_x / canvas.width * 400}, 100%, 50%)`; // Color of the bars
+    ctx.fillRect(bar_x, canvas.height, bar_width, bar_height);
+  }
+}
+
+//console.log(songs[25]);
+</script>
+</body>
+</html>
